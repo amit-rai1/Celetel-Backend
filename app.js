@@ -13,6 +13,8 @@ import { mongoconnection } from './db';
 // import { addSenderID } from './controller/senderId';
 // import permission from './route/permission'
 // import addSenderID from './route/senderId'
+import clientRoute from './route/clientRoute'
+import sessionMiddleware from './middleware/sessionMiddleware';
 const app = express()
 
 console.log(Date.now(),"app");
@@ -23,6 +25,7 @@ app.use(bodyParser.urlencoded({
     extended:true
 }));
 app.use(bodyParser.json())
+app.use(sessionMiddleware);
 
 // app.use("/api/client",client)
 app.get("/",(req,res)=>{
@@ -34,7 +37,7 @@ app.get("/",(req,res)=>{
 // app.use('/api/userRoute', userRoute);
 // app.use('/api/',permission)
 
-
+app.use('/api/client', clientRoute);
 
 
 

@@ -7,8 +7,15 @@ const config = {
             DATABASE: "Celetel",
             UserName: "",
             Password: ""
+            
+        },
+        email: {
+            username: "amit.rai@celetel.com",
+            password: "Amr#1324"
         },
         PORTNO : 8600,
+
+     
        
     },
 
