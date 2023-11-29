@@ -20,6 +20,9 @@ const clientSchema = new mongoose.Schema({
     required: true,
     enum: ['client'], // Make sure role is either 'admin' or 'user'
   },
+  password:{
+    type:String
+  },
 });
 
 const clientModel= mongoose.model('clientModel', clientSchema);

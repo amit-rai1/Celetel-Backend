@@ -23,13 +23,13 @@ const config = {
         DB:{
             HOST: "0.0.0.0",
             PORT: "27017",
-            DATABASE: "test",
+            DATABASE: "Celetel",
             MONGOOSE:{
                 useUndifinedTopology: true,
                 useNewUrlParser: true
             },
             UserName: "celetel",
-            Password: "Dun3cC38Ah@Vg$T"
+            Password: "fAnOMHfaa9yEmv3v"
         },
         
             
