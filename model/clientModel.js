@@ -6,7 +6,7 @@ const clientSchema = new mongoose.Schema({
 
     fullName:{
         type:String,
-        requires:true
+        requires:false
     },
     
   email: {
@@ -17,12 +17,23 @@ const clientSchema = new mongoose.Schema({
   
   role: {
     type: String,
-    required: true,
+    required: false,
     enum: ['client'], // Make sure role is either 'admin' or 'user'
   },
   password:{
     type:String
   },
+  otp: {
+    code: {
+        type: Number,
+        required: false
+    },
+    expiry: {
+        type: Date,
+        default: Date.now, // Set default to current timestamp
+        index: { expires: '5m' } // Set the expiration time (5 minutes in this case)
+    }
+}
 });
 
 const clientModel= mongoose.model('clientModel', clientSchema);

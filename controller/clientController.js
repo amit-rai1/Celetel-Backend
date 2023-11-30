@@ -4,28 +4,56 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 
 
+// export const sendVerificationEmail = async (req, res) => {
+//     try {
+//         const { email } = req.body;
+
+//         const otp = generateOTP(); // Implement your OTP generation logic here
+//         const timestamp = Date.now();
+//         // Sending verification email
+//         const emailSent = await sendEmail('amit.rai@celetel.com', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
+
+//         if (!emailSent) {
+//             throw new Error('Failed to send verification email');
+//         }
+//         req.session.email = email;
+//         req.session.otp = otp;
+//         req.session.timestamp = timestamp;
+//         console.log(req.session.email, " req.session.email")
+//         res.status(200).json({ success: true, msg: 'Verification email sent successfully.' });
+//     } catch (error) {
+//         res.status(400).json({ success: false, msg: error.message });
+//     }
+// };
+
 export const sendVerificationEmail = async (req, res) => {
     try {
         const { email } = req.body;
 
         const otp = generateOTP(); // Implement your OTP generation logic here
-        const timestamp = Date.now();
+
+        // Save OTP and email in the database
+        const client = new clientModel({
+            email: email,
+            otp: {
+                code: otp
+            }
+        });
+
+        await client.save();
+
         // Sending verification email
         const emailSent = await sendEmail('amit.rai@celetel.com', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
 
         if (!emailSent) {
             throw new Error('Failed to send verification email');
         }
-        req.session.email = email;
-        req.session.otp = otp;
-        req.session.timestamp = timestamp;
-        console.log(req.session.email, " req.session.email")
+
         res.status(200).json({ success: true, msg: 'Verification email sent successfully.' });
     } catch (error) {
         res.status(400).json({ success: false, msg: error.message });
     }
 };
-
 
 // Mock function for generating OTP (replace with your OTP generation logic)
 function generateOTP() {
@@ -37,23 +65,17 @@ export const verifyOTP = async (req, res) => {
         const { enteredOTP } = req.body;
         
         console.log(enteredOTP, "entered");
+        
+        // Find the user in the database based on the entered OTP
+        const user = await clientModel.findOne({ 'otp.code': enteredOTP });
 
-        // Retrieve the stored email and OTP from the session
-        const storedEmail = req.session.email;
-        const storedOTP = req.session.otp;
-        console.log(storedEmail, "stored");
-        console.log(storedOTP, "storedOTP");
-
-        if (!storedEmail || !storedOTP) {
-            throw new Error('Email or OTP not found in session');
-        }
-
-        if (String(storedOTP) !== enteredOTP) {
+        if (!user) {
             throw new Error('Invalid OTP');
         }
 
-        // Mark the email as verified or perform further actions as needed
-        req.session.isEmailVerified = true;
+        // If the OTP is found, mark it as verified in the database
+        user.otp.isVerified = true;
+        await user.save();
 
         res.status(200).json({ success: true, msg: 'Email verification successful' });
     } catch (error) {
