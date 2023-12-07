@@ -28,63 +28,63 @@ const jwt = require("jsonwebtoken");
 
 export const sendVerificationEmail = async (req, res) => {
     try {
-        const { email } = req.body;
-    
-        const otp = generateOTP(); // Implement your OTP generation logic here
-    
-        // Save OTP and email in the database with OTP expiration time
-        const client = new clientModel({
-          email: email,
-          otp: {
-            code: otp,
-            expiry: new Date(new Date().getTime() + 5 * 60000), // Set the expiration time for OTP (5 minutes in this case)
-          },
-        });
-    
-        await client.save();
-    
-        // Sending verification email
-        const emailSent = await sendEmail('amit.rai@celetel.com', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
-    
-        if (!emailSent) {
-          throw new Error('Failed to send verification email');
-        }
-    
-        res.status(200).json({ success: true, msg: 'Verification email sent successfully.' });
-      } catch (error) {
-        res.status(400).json({ success: false, msg: error.message });
+      const { email } = req.body;
+  
+      const otp = generateOTP(); // Generate OTP
+      const expiryTime = new Date(Date.now() + 5 * 60000); // Set OTP expiry time (5 minutes)
+  
+      // Save OTP and email in the database
+      const client = new clientModel({
+        email: email,
+        otp: {
+          code: otp,
+          expiry: expiryTime,
+        },
+      });
+  
+      await client.save();
+  
+      // Send OTP verification email
+      const emailSent = await sendEmail('amit.rai@celetel.com', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
+  
+      if (!emailSent) {
+        throw new Error('Failed to send verification email');
       }
-    
-};
-
-// Mock function for generating OTP (replace with your OTP generation logic)
-function generateOTP() {
+  
+      res.status(200).json({ success: true, msg: 'Verification email sent successfully.' });
+    } catch (error) {
+      res.status(400).json({ success: false, msg: error.message });
+    }
+  };
+  
+  function generateOTP() {
     return Math.floor(1000 + Math.random() * 9000);
-}
+  }
+  
+
+
 
 export const verifyOTP = async (req, res) => {
     try {
-        const { enteredOTP } = req.body;
-        
-        console.log(enteredOTP, "entered");
-        
-        // Find the user in the database based on the entered OTP
-        const user = await clientModel.findOne({ 'otp.code': enteredOTP });
+      const { enteredOTP } = req.body;
+  
+      const user = await clientModel.findOne({ 'otp.code': enteredOTP });
+  
+      if (!user) {
+        throw new Error('Invalid OTP');
+      }
+  
+      user.otp.isVerified = true;
+      user.isEmailVerified = true; // Update isEmailVerified to true when OTP is verified
 
-        if (!user) {
-            throw new Error('Invalid OTP');
-        }
-
-        // If the OTP is found, mark it as verified in the database
-        user.otp.isVerified = true;
-        await user.save();
-
-        res.status(200).json({ success: true, msg: 'Email verification successful' });
+      await user.save();
+  
+      res.status(200).json({ success: true, msg: 'Email verification successful' });
     } catch (error) {
-        res.status(400).json({ success: false, msg: error.message });
+      res.status(400).json({ success: false, msg: error.message });
     }
-};
-
+  };
+  
 
 
 
@@ -118,40 +118,41 @@ export const verifyOTP = async (req, res) => {
 // };
 export const clientSignup = async (req, res) => {
     try {
-        const { fullName, email, country, role } = req.body;
-    
-        // Find the client with the provided email
-        const existingClient = await clientModel.findOne({ email });
-    
-        if (existingClient) {
-          if (!existingClient.otp.isVerified) {
-            return res.status(400).json({
-              success: false,
-              msg: 'Please verify your email before signing up.',
-            });
-          }
-          // If email is verified, proceed with signup
-        } else {
+      const { fullName, email, country, phone, role } = req.body;
+  
+      const existingClient = await clientModel.findOne({ email });
+  
+      if (existingClient) {
+        if (!existingClient.isEmailVerified || !existingClient.otp.isVerified) {
           return res.status(400).json({
             success: false,
-            msg: 'Email not found. Please verify your email before signing up.',
+            msg: 'Please verify your email before signing up.',
           });
         }
-    
-        // Create a new client instance and save it to the database
-        const newClient = new clientModel({ fullName, email, country, role });
-        const savedClient = await newClient.save();
-    
-        res.status(200).json({
+  
+        // If the existing client is verified, return success message or handle as needed
+        return res.status(200).json({
           success: true,
-          msg: 'Client registered successfully',
-          result: savedClient._doc,
+          msg: 'Client already registered and verified.',
+          result: existingClient._doc,
         });
-      } catch (error) {
-        res.status(400).json({ success: false, msg: error.message });
       }
-    
-};
+  
+      // If the email doesn't exist, proceed with creating a new client
+      const newClient = new clientModel({ fullName, email, country, phone, role });
+      const savedClient = await newClient.save();
+  
+      res.status(200).json({
+        success: true,
+        msg: 'Client registered successfully',
+        result: savedClient._doc,
+      });
+    } catch (error) {
+      res.status(400).json({ success: false, msg: error.message });
+    }
+  };
+  
+  
 
 
 export const getAllClients = async (req, res) => {
