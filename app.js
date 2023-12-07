@@ -5,7 +5,7 @@ import cors from 'cors';
 const fs = require('fs');
 const path = require('path'); 
 
-const file = fs.readFileSync('./F3543B2E4E48A9A690F8B7E82A610106.txt');
+const file = fs.readFileSync('./651599B3F851256DA2B66043D2F11BDA.txt');
 
 
 // const app = require('../app').default;
@@ -38,8 +38,8 @@ app.get("/",(req,res)=>{
     res.send("server listining on 9800")
 })
 
-app.get('/.well-known/pki-validation/F3543B2E4E48A9A690F8B7E82A610106.txt', (req, res) => {
-    const filePath = path.join(__dirname, 'F3543B2E4E48A9A690F8B7E82A610106.txt');
+app.get('/.well-known/pki-validation/651599B3F851256DA2B66043D2F11BDA.txt', (req, res) => {
+    const filePath = path.join(__dirname, '651599B3F851256DA2B66043D2F11BDA.txt');
     res.sendFile(filePath, (err) => {
         if (err) {
             console.error('Error sending file:', err);
