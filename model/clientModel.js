@@ -15,6 +15,10 @@ const clientSchema = new mongoose.Schema({
     required: true,
   },
   
+  country:{
+    type:String
+  },
+
   role: {
     type: String,
     required: false,
@@ -29,10 +33,14 @@ const clientSchema = new mongoose.Schema({
         required: false
     },
     expiry: {
-        type: Date,
-        default: Date.now, // Set default to current timestamp
-        index: { expires: '5m' } // Set the expiration time (5 minutes in this case)
-    }
+      type: Date,
+      default: Date.now,
+    },
+
+    isVerified: {
+      type: Boolean,
+      default: false, // Set default value to false
+    },
 }
 });
 

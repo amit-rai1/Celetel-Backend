@@ -4,7 +4,7 @@ const config = {
         DB:{
             HOST: "127.0.0.1",
             PORT: "27017",
-            DATABASE: "Celetel",
+            DATABASE: "CeletelWeb",
             UserName: "",
             Password: ""
             
@@ -23,13 +23,13 @@ const config = {
         DB:{
             HOST: "0.0.0.0",
             PORT: "27017",
-            DATABASE: "Celetel",
+            DATABASE: "CeletelWeb",
             MONGOOSE:{
                 useUndifinedTopology: true,
                 useNewUrlParser: true
             },
-            UserName: "celetel",
-            Password: "fAnOMHfaa9yEmv3v"
+            UserName: "lalit",
+            Password: "393ZgOumwOPm3xdA"
         },
         email: {
             username: "amit.rai@celetel.com",

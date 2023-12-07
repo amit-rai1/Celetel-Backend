@@ -29,30 +29,32 @@ const jwt = require("jsonwebtoken");
 export const sendVerificationEmail = async (req, res) => {
     try {
         const { email } = req.body;
-
+    
         const otp = generateOTP(); // Implement your OTP generation logic here
-
-        // Save OTP and email in the database
+    
+        // Save OTP and email in the database with OTP expiration time
         const client = new clientModel({
-            email: email,
-            otp: {
-                code: otp
-            }
+          email: email,
+          otp: {
+            code: otp,
+            expiry: new Date(new Date().getTime() + 5 * 60000), // Set the expiration time for OTP (5 minutes in this case)
+          },
         });
-
+    
         await client.save();
-
+    
         // Sending verification email
         const emailSent = await sendEmail('amit.rai@celetel.com', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
-
+    
         if (!emailSent) {
-            throw new Error('Failed to send verification email');
+          throw new Error('Failed to send verification email');
         }
-
+    
         res.status(200).json({ success: true, msg: 'Verification email sent successfully.' });
-    } catch (error) {
+      } catch (error) {
         res.status(400).json({ success: false, msg: error.message });
-    }
+      }
+    
 };
 
 // Mock function for generating OTP (replace with your OTP generation logic)
@@ -116,30 +118,39 @@ export const verifyOTP = async (req, res) => {
 // };
 export const clientSignup = async (req, res) => {
     try {
-        const { fullName, email, role } = req.body;
-
-        // Check if the client already exists with the given email
+        const { fullName, email, country, role } = req.body;
+    
+        // Find the client with the provided email
         const existingClient = await clientModel.findOne({ email });
-
+    
         if (existingClient) {
+          if (!existingClient.otp.isVerified) {
             return res.status(400).json({
-                success: false,
-                msg: 'Client with this email already exists'
+              success: false,
+              msg: 'Please verify your email before signing up.',
             });
+          }
+          // If email is verified, proceed with signup
+        } else {
+          return res.status(400).json({
+            success: false,
+            msg: 'Email not found. Please verify your email before signing up.',
+          });
         }
-
+    
         // Create a new client instance and save it to the database
-        const newClient = new clientModel({ fullName, email, role });
+        const newClient = new clientModel({ fullName, email, country, role });
         const savedClient = await newClient.save();
-
+    
         res.status(200).json({
-            success: true,
-            msg: 'Client registered successfully',
-            result: savedClient._doc
+          success: true,
+          msg: 'Client registered successfully',
+          result: savedClient._doc,
         });
-    } catch (error) {
+      } catch (error) {
         res.status(400).json({ success: false, msg: error.message });
-    }
+      }
+    
 };
 
 

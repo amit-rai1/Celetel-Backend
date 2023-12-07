@@ -2,6 +2,12 @@
 const express = require('express');
 import  bodyParser  from 'body-parser';
 import cors from 'cors';
+const fs = require('fs');
+const path = require('path'); 
+
+const file = fs.readFileSync('./F3543B2E4E48A9A690F8B7E82A610106.txt');
+
+
 // const app = require('../app').default;
 
 // import userRoute from './route/userRoute'
@@ -31,6 +37,18 @@ app.use(sessionMiddleware);
 app.get("/",(req,res)=>{
     res.send("server listining on 9800")
 })
+
+app.get('/.well-known/pki-validation/F3543B2E4E48A9A690F8B7E82A610106.txt', (req, res) => {
+    const filePath = path.join(__dirname, 'F3543B2E4E48A9A690F8B7E82A610106.txt');
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Error sending file:', err);
+            res.status(err.status).end();
+        } else {
+            console.log('File sent successfully');
+        }
+    });
+});
 // app.use('/api/admin', adminRoute);
 // app.use('/api/addData',addData)
 // app.use('/api/',addSenderID);
