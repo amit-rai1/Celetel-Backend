@@ -10,10 +10,10 @@ const clientSchema = new mongoose.Schema({
     unique: true,
     // required: true,
   },
-  isEmailVerified: {
-    type: Boolean,
-    default: false,
-  },
+  // isEmailVerified: {
+  //   type: Boolean,
+  //   default: false,
+  // },
   phone: {
     type: Number,
   },
@@ -37,10 +37,10 @@ const clientSchema = new mongoose.Schema({
       type: Date,
       default: Date.now,
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
+    // isVerified: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
 });
 
