@@ -95,7 +95,7 @@ export const clientSignup = async (req, res) => {
     try {
         const { fullName, email,country,phone, role } = req.body;
 
-        console.log(req.body, "req.body");
+        // console.log(req.body, "req.body");
 
 
         const existingClient = await clientModel.findOne({ email });
