@@ -1,30 +1,10 @@
 import { sendEmail } from "../middleware/sendEmail";
 import clientModel from "../model/clientModel";
+import otpVerification from "../model/otpVerification";
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const config = require("../config")
 
-
-// export const sendVerificationEmail = async (req, res) => {
-//     try {
-//         const { email } = req.body;
-
-//         const otp = generateOTP(); // Implement your OTP generation logic here
-//         const timestamp = Date.now();
-//         // Sending verification email
-//         const emailSent = await sendEmail('amit.rai@celetel.com', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
-
-//         if (!emailSent) {
-//             throw new Error('Failed to send verification email');
-//         }
-//         req.session.email = email;
-//         req.session.otp = otp;
-//         req.session.timestamp = timestamp;
-//         console.log(req.session.email, " req.session.email")
-//         res.status(200).json({ success: true, msg: 'Verification email sent successfully.' });
-//     } catch (error) {
-//         res.status(400).json({ success: false, msg: error.message });
-//     }
-// };
 
 export const sendVerificationEmail = async (req, res) => {
     try {
@@ -34,7 +14,7 @@ export const sendVerificationEmail = async (req, res) => {
       const expiryTime = new Date(Date.now() + 5 * 60000); // Set OTP expiry time (5 minutes)
     
     //   Save OTP and email in the database
-      const client = new clientModel({
+      const client = new otpVerification({
         // email: email,
         otp: {
           code: otp,
@@ -45,7 +25,7 @@ export const sendVerificationEmail = async (req, res) => {
       await client.save();
     
       // Send OTP verification email
-      const emailSent = await sendEmail('yourEmailAddress', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
+      const emailSent = await sendEmail('amit.rai@celetel.com', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
     
       if (!emailSent) {
         throw new Error('Failed to send verification email');
@@ -70,14 +50,36 @@ export const sendVerificationEmail = async (req, res) => {
       const { enteredOTP } = req.body;
   
       // Find the user in the database based on the entered OTP
-      const user = await clientModel.findOne({ 'otp.code': enteredOTP });
+      const user = await otpVerification.findOne({ 'otp.code': enteredOTP });
+
+    //   console.log("user",user.otp.expiry);
+
+
+    //   if (!user?.otp ) {
+    //     throw new Error('otp not found pls verify your mail first');
+    //   }
   
-      if (!user) {
+    if (!user) {
         throw new Error('Invalid OTP');
       }
   
-      // If the OTP is found, mark it as verified in the database
-    //   user.otp.isVerified = true;
+      if (user.isVerified) {
+        throw new Error('Email is already verified');
+      }
+  
+      if (user.otp && user.otp.code !== enteredOTP) {
+        throw new Error('Invalid OTP');
+      }
+  
+      if (user.otp && user.otp.expiry < new Date()) {
+        throw new Error('OTP has expired');
+      }
+
+    //   if (user.otp.code !== enteredOTP) {
+    //     throw new Error('Invalid OTP');
+    //   }
+     user.isVerified=true
+   
       await user.save();
   
       res.status(200).json({ success: true, msg: 'Email verification successful' });

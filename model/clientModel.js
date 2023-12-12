@@ -1,48 +1,35 @@
 import mongoose from 'mongoose';
 
-const clientSchema = new mongoose.Schema({
-  fullName: {
-    type: String,
-    required: false,
-  },
-  email: {
-    type: String,
-    unique: true,
-    // required: true,
-  },
-  // isEmailVerified: {
-  //   type: Boolean,
-  //   default: false,
-  // },
-  phone: {
-    type: Number,
-  },
-  country: {
-    type: String,
-  },
-  role: {
-    type: String,
-    required: false,
-    enum: ['client'],
-  },
-  password: {
-    type: String,
-  },
-  otp: {
-    code: {
-      type: Number,
+const clientSchema = new mongoose.Schema(
+  {
+    fullName: {
+      type: String,
       required: false,
     },
-    expiry: {
-      type: Date,
-      default: Date.now,
+    email: {
+      type: String,
+      unique: true,
+      // required: true,
     },
-    // isVerified: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    phone: {
+      type: Number,
+    },
+    country: {
+      type: String,
+    },
+    role: {
+      type: String,
+      required: false,
+      enum: ['client'],
+    },
+    password: {
+      type: String,
+    },
   },
-});
+  {
+    timestamps: true, // Adds createdAt and updatedAt fields
+  }
+);
 
 const clientModel = mongoose.model('clientModel', clientSchema);
 export default clientModel;
