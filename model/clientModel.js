@@ -25,6 +25,11 @@ const clientSchema = new mongoose.Schema(
     password: {
       type: String,
     },
+
+    googleId:String,
+    displayName:String,
+    image:String,
+
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields

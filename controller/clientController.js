@@ -165,7 +165,7 @@ export const getClientById = async (req, res) => {
 export const clientUpdate = async (req, res) => {
     try {
         const { clientId, email, password, confirmPassword } = req.body;
-
+         console.log(req.body,"req.body123456");
         // Find the client by ID
         let updateFields = {};
 
@@ -217,6 +217,8 @@ export const clientLogin = async (req, res) => {
 
     try {
         const { email, password } = req.body;
+
+        console.log(req.body,"reqqqqqq")
 
         // Find the user by email
         const user = await clientModel.findOne({ email });
