@@ -29,7 +29,12 @@ const clientSchema = new mongoose.Schema(
     googleId:String,
     displayName:String,
     image:String,
-
+    outlookId: String,
+    outlookDisplayName: String,
+    outlookEmail: String,
+    linkedinId: String,
+    linkedinDisplayName: String,
+    name:String
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields

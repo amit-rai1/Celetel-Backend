@@ -1,49 +1,63 @@
-'use Strict';  
- 
-require('@babel/register')
+'use strict';
+
+require('@babel/register');
 require('@babel/polyfill');
-const http = require ('http');
+const debug = require('debug')('msal:server');
+const http = require('http');
 
-// const https = require ('https');
+const app = require('../app').default; // Assuming this is the path to your app
+const config = require('../config');
+const configvalue = config.get(process.env.Node_env);
+const PORT = configvalue.PORTNO; // Defaulting to 3000 if PORTNO is not set in config
 
+app.set('port', PORT);
 
-const app = require('../app').default;
-// const app = require('../app')
 const server = http.createServer(app);
 
-const config = require('../config')
-// console.log(process.env.Node_env);
-const configvalue = config.get(process.env.Node_env);
-
-// const port = configvalue.PORTNO;
-const PORT = configvalue.PORTNO; // Using the PORTNO defined in your config file
-
-
 server.listen(PORT);
+server.on('error', onError);
+server.on('listening', onListening);
 
-server.on('listening', ()=> {
-   console.log(`Listening on ${PORT}`);
-});
-// 'use Strict';
+var port = normalizePort(configvalue.PORTNO );
+app.set('port', port);
 
-// require('@babel/register')
-// require('@babel/polyfill');
-// const http = require('http');
+function normalizePort(val) {
+   var port = parseInt(val, 10);
 
-// const app = require('../src'); // Assuming this is the path to your app
-// const server = http.createServer(app);
+   if (isNaN(port)) {
+       // named pipe
+       return val;
+   }
 
-// const config = require('../config');
-// const configvalue = config.get(process.env.Node_env);
+   if (port >= 0) {
+       // port number
+       return port;
+   }
 
-// console.log(configvalue, "configvalue");
+   return false;
+}
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+  const bind = typeof PORT === 'string' ? 'Pipe ' + PORT : 'Port ' + PORT;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
 
-// const port = configvalue.PORT ; // Defaulting to 3000 if PORT is not set in config
-
-// console.log(port, "port");
-
-// server.listen(port);
-
-// server.on('listening', () => {
-//   console.log(`Listening on ${port}`);
-// });
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+  console.log('Server listening on ' + bind); // New console log to indicate server start
+}

@@ -2,7 +2,12 @@
 
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as OutlookStrategy } from 'passport-outlook';
+const linkedInStrategy = require('passport-linkedin-oauth2').Strategy;
+const crypto = require('crypto');
+
 import clientModel from '../model/clientModel';
+
 const initPassport = () => {
   passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -49,5 +54,55 @@ const initPassport = () => {
     }
   }));
 };
+
+
+//outlook login 
+
+
+
+// passport.use(new LinkedInStrategy({
+//   clientID: process.env.LINKEDIN_CLIENT_ID,
+//   clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+//   callbackURL: "http://localhost:8600/auth/linkedin/callback",
+//   scope: ['email', 'profile','openid','w_member_social'] // Adjust scopes as needed
+// },
+// async (accessToken, refreshToken, profile, done) => {
+//   try {
+//     console.log('Access Token:', accessToken);
+//     // Here, process the 'profile' object received from LinkedIn
+//     let user = await clientModel.findOne({ linkedinId: profile.id });
+
+//     if (!user) {
+//       user = new clientModel({
+//         linkedinId: profile.id,
+//         displayName: profile.displayName,
+//         // Map other relevant fields from the profile
+//       });
+//       await user.save();
+//     } else {
+//       user.displayName = profile.displayName;
+//       // Update other fields if needed
+//       await user.save();
+//     }
+
+//     // Return the user object to passport for authentication
+//     return done(null, user);
+//   } catch (err) {
+//     console.error("LinkedIn OAuth error:", err);
+//     return done(err, false);
+//   }
+// }));
+// ... (previous code remains unchanged)
+
+
+
+
+
+
+
+
+
+
+
 
 export { initPassport, passport };

@@ -1,7 +1,7 @@
 import express from 'express';
 // const passport = require("passport
 import { passport } from '../middleware/passport';
-
+import axios from 'axios';
 import { initPassport } from '../middleware/passport';
 
 initPassport();
@@ -9,6 +9,8 @@ initPassport();
 
 
 const router = express.Router();
+
+
 
 router.get("/login/success", (req, res) => {
     console.log(req,"req")
@@ -44,4 +46,12 @@ router.get("/logout", (req, res) => {
 	req.logout();
 	res.redirect("http://localhost:3000/*");
 });
+
+
+
+  
+  
+  
+
+
 export default router;
