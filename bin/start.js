@@ -4,15 +4,22 @@ require('@babel/register');
 require('@babel/polyfill');
 const debug = require('debug')('msal:server');
 const http = require('http');
+// const https = require('https')
 
 const app = require('../app').default; // Assuming this is the path to your app
 const config = require('../config');
 const configvalue = config.get(process.env.Node_env);
 const PORT = configvalue.PORTNO; // Defaulting to 3000 if PORTNO is not set in config
-
+const fs = require('fs')
 app.set('port', PORT);
+const path = require('path');
+
+
+
 
 const server = http.createServer(app);
+
+
 
 server.listen(PORT);
 server.on('error', onError);
@@ -54,6 +61,7 @@ function onError(error) {
       throw error;
   }
 }
+
 
 function onListening() {
   const addr = server.address();

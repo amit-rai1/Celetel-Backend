@@ -13,7 +13,6 @@ class AuthProvider {
     };
 
     login(options = {}) {
-        console.log('Redirect URI:', options.redirectUri);
         
         return async (req, res, next) => {
 

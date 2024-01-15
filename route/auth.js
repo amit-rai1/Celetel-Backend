@@ -10,7 +10,7 @@ const authProvider = require('../middleware/AuthProvider')
 const { REDIRECT_URI, POST_LOGOUT_REDIRECT_URI } = require('../middleware/authConfig');
 
 const router = express.Router();
-console.log('Redirect URI:', REDIRECT_URI);
+// console.log('Redirect URI:', REDIRECT_URI);
 
 router.get('/signin', authProvider.login({
     scopes: [],

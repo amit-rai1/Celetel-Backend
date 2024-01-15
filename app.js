@@ -13,7 +13,6 @@ var indexRouter = require('./route/index');
 var usersRouter = require('./route/users');
 var authRouter = require('./route/auth');
 
-const {Authorization,Redirect}=require('./middleware/authHelper');
 import  bodyParser  from 'body-parser';
 import cors from 'cors';
 
@@ -31,7 +30,7 @@ const cookieSession = require("cookie-session");
 
 const app = express()
 
-console.log(Date.now(),"app");
+// console.log(Date.now(),"app");
 
 mongoconnection();
 
