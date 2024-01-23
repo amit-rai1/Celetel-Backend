@@ -36,10 +36,13 @@ const app = express()
 
 mongoconnection();
 
-app.use(cors({origin:'http://localhost:8600',
-methods:"GET,POST,PUT,DELETE",
-credentials:true
-}));
+// app.use(cors({origin:'http://localhost:8600',
+// methods:"GET,POST,PUT,DELETE",
+// credentials:true
+// }));
+
+app.use(cors({origin:'*'}));
+
 app.use(bodyParser.urlencoded({
     extended:true
 }));
