@@ -4,27 +4,27 @@ const paymentSchema = new mongoose.Schema(
   {
     name: {
         type: String,
-        required: true,
+        // required: true,
       },
       email: {
         type: String,
-        required: true,
+        // required: true,
       },
       phoneNumber: {
         type: String,
-        required: true,
+        // required: true,
       },
       amount: {
         type: Number,
-        required: true,
+        // required: true,
       },
       merchentUserId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ClientModel',
-        required: true,
+        // required: true,
       },
       merchantTransactionId: {
-        type: String,
+        // type: String,
        
         },
       }
