@@ -26,6 +26,8 @@ import socialRoute from './route/socialRoute'
 const linkdinRoute =  require('./route/linkedinRoute')
 import sessionMiddleware from './middleware/sessionMiddleware';
 import linkedinStrategy from './controller/linkedinStrategy';
+const payment =require('./route/payment')
+
 const cookieSession = require("cookie-session");
 
 const app = express()
@@ -119,6 +121,12 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
+// app.use('/api/v1', paymentRouter); // Adjust the path as needed
+
+
+// app.use('/api/v1', payment); 
+
+// app.use('/api/v1', payment);
 
 
   

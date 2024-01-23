@@ -2,6 +2,7 @@
 
 import express from 'express';
 import { clientLogin, clientSignup, clientUpdate, getAllClients, getClientById, sendVerificationEmail, verifyOTP } from '../controller/clientController';
+import { checkStatus, newPayment } from '../controller/payment';
 
 const router = express.Router();
 
@@ -16,6 +17,20 @@ router.get('/getAllClients', getAllClients);
 
 router.get('/getClientById/:clientId', getClientById);
 router.put('/setupAccount', clientUpdate);
+
+router.get('/test', (req, res) => {
+    res.send('Test route is working!');
+    console.log(req,"req")
+    console.log(res,"res")
+
+  });
+
+  router.post('/payment', newPayment);
+router.post('/status/:txnId', checkStatus);
+
+
+
+  
 
 
 
