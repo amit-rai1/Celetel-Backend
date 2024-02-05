@@ -1,7 +1,7 @@
 // routes/adminRoutes.js
 
 import express from 'express';
-import { clientLogin, clientSignup, clientUpdate, getAllClients, getClientById, sendVerificationEmail, verifyOTP } from '../controller/clientController';
+import { clientLogin, clientSignup, clientUpdate, contactUs, contactusInfo, getAllClients, getClientById, sendVerificationEmail, verifyOTP } from '../controller/clientController';
 import { checkStatus, newPayment } from '../controller/payment';
 
 const router = express.Router();
@@ -27,6 +27,8 @@ router.get('/test', (req, res) => {
 
   router.post('/payment', newPayment);
 router.post('/status/:txnId', checkStatus);
+
+router.post('/conatctUs',contactusInfo)
 
 
 

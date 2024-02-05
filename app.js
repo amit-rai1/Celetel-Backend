@@ -26,6 +26,8 @@ import socialRoute from './route/socialRoute'
 const linkdinRoute =  require('./route/linkedinRoute')
 import sessionMiddleware from './middleware/sessionMiddleware';
 import linkedinStrategy from './controller/linkedinStrategy';
+import otpTesting from './route/otpTesting';
+import contactUs from './route/contactUs'
 const payment =require('./route/payment')
 
 const cookieSession = require("cookie-session");
@@ -91,6 +93,10 @@ app.use('/auth', socialRoute);
 app.use('/api/client', clientRoute);
 
 app.use('/auth', linkdinRoute);
+
+app.use('/',otpTesting)
+
+app.use('/',contactUs)
 
 
 

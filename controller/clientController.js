@@ -1,6 +1,7 @@
 import { sendEmail } from "../middleware/sendEmail";
 import clientModel from "../model/clientModel";
 import otpVerification from "../model/otpVerification";
+import contactUs from "../model/contactUs";
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const config = require("../config")
@@ -252,4 +253,59 @@ export const clientLogin = async (req, res) => {
         res.status(500).json({ success: false, msg: error.message });
     }
 
+};
+
+
+//CONTACTUS
+
+
+// export const contactusInfo = async (req, res) => {
+//     try {
+//         const { name, email, service, budget, message } = req.body;
+
+//         const existingClient = await contactUs.findOne({ email });
+
+//         const result = await contactUs.create({ name, email, service, budget, message });
+
+//         res.status(200).json({
+//             success: true,
+//             msg: 'Thank you for getting in touch! We will connect with you shortly.',
+//             result
+//         });
+//     } catch (error) {
+//         res.status(400).json({ success: false, msg: error.message });
+//     }
+// };
+
+
+
+export const contactusInfo = async (req, res) => {
+    try {
+        const { name, email, service, budget, message } = req.body;
+
+        const existingClient = await contactUs.findOne({ email });
+
+        const result = await contactUs.create({ name, email, service, budget, message });
+
+        // Send email to the service provider with user information
+        const adminEmail = 'amit.rai@celetel.com'; 
+        const emailSent = await sendEmail(
+            adminEmail,
+            adminEmail, 
+            'New Contact Form Submission',
+            `A new contact form has been submitted:\n\nUser Information:\nName: ${name}\nEmail: ${email}\nService: ${service}\nBudget: ${budget}\nMessage: ${message}`
+        );
+
+        if (!emailSent) {
+            throw new Error('Failed to send notification email');
+        }
+
+        res.status(200).json({
+            success: true,
+            msg: 'Thank you for getting in touch! We will connect with you shortly.',
+            result
+        });
+    } catch (error) {
+        res.status(400).json({ success: false, msg: error.message });
+    }
 };
