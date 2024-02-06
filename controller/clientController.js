@@ -93,34 +93,84 @@ export const sendVerificationEmail = async (req, res) => {
 
 
 
+// export const clientSignup = async (req, res) => {
+//     console.log("enter");
+//     try {
+//         const { fullName, email,country,phone, role } = req.body;
+
+//         // console.log(req.body, "req.body");
+
+
+//         const existingClient = await clientModel.findOne({ email });
+
+//         if (existingClient) {
+//             throw new Error('client with this email already exists');
+//         }
+
+//         const clientData = new clientModel({ fullName, email,country,phone, role });
+//         const result = await clientData.save(); // Corrected line
+
+        
+
+//         res.send({
+//             status: 200,
+//             success: true,
+//             msg: 'Client registered successfully',
+//             result: result._doc
+//         });
+//     } catch (error) {
+//         res.send({ status: 400, success: false, msg: error.message });
+//     }
+// };
+
 export const clientSignup = async (req, res) => {
     console.log("enter");
     try {
-        const { fullName, email,country,phone, role } = req.body;
+        const { fullName, email, country, phone, role } = req.body;
 
-        // console.log(req.body, "req.body");
-
-
+        // Check if the client already exists
         const existingClient = await clientModel.findOne({ email });
-
         if (existingClient) {
-            throw new Error('client with this email already exists');
+            throw new Error('Client with this email already exists');
         }
 
-        const clientData = new clientModel({ fullName, email,country,phone, role });
-        const result = await clientData.save(); // Corrected line
+        // Generate OTP
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        const expiryTime = new Date(Date.now() + 5 * 60000); // Set OTP expiry time (5 minutes)
 
-        res.send({
+        // Save OTP and email in the database
+        const client = new otpVerification({
+            email: email,
+            otp: {
+                code: otp,
+                expiry: expiryTime,
+            },
+        });
+
+        await client.save();
+
+        // Send OTP verification email
+        const emailSent = await sendEmail('amit.rai@celetel.com', email, 'Email Verification OTP', `Your OTP for email verification is: ${otp}`);
+
+        if (!emailSent) {
+            throw new Error('Failed to send verification email');
+        }
+
+        // Create a new client
+        const clientData = new clientModel({ fullName, email, country, phone, role });
+        const result = await clientData.save();
+
+        // Send response
+        res.status(200).json({
             status: 200,
             success: true,
             msg: 'Client registered successfully',
             result: result._doc
         });
     } catch (error) {
-        res.send({ status: 400, success: false, msg: error.message });
+        res.status(400).json({ status: 400, success: false, msg: error.message });
     }
 };
-
 
 
 export const getAllClients = async (req, res) => {
@@ -258,27 +308,6 @@ export const clientLogin = async (req, res) => {
 
 //CONTACTUS
 
-
-// export const contactusInfo = async (req, res) => {
-//     try {
-//         const { name, email, service, budget, message } = req.body;
-
-//         const existingClient = await contactUs.findOne({ email });
-
-//         const result = await contactUs.create({ name, email, service, budget, message });
-
-//         res.status(200).json({
-//             success: true,
-//             msg: 'Thank you for getting in touch! We will connect with you shortly.',
-//             result
-//         });
-//     } catch (error) {
-//         res.status(400).json({ success: false, msg: error.message });
-//     }
-// };
-
-
-
 export const contactusInfo = async (req, res) => {
     try {
         const { name, email, service, budget, message } = req.body;
@@ -287,7 +316,6 @@ export const contactusInfo = async (req, res) => {
 
         const result = await contactUs.create({ name, email, service, budget, message });
 
-        // Send email to the service provider with user information
         const adminEmail = 'amit.rai@celetel.com'; 
         const emailSent = await sendEmail(
             adminEmail,
