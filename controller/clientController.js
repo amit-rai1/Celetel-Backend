@@ -310,18 +310,18 @@ export const clientLogin = async (req, res) => {
 
 export const contactusInfo = async (req, res) => {
     try {
-        const { name, email, service, budget, message } = req.body;
+        const { name, email, service, phone, message } = req.body;
 
         const existingClient = await contactUs.findOne({ email });
 
-        const result = await contactUs.create({ name, email, service, budget, message });
+        const result = await contactUs.create({ name, email, service, phone, message });
 
         const adminEmail = 'amit.rai@celetel.com'; 
         const emailSent = await sendEmail(
             adminEmail,
             adminEmail, 
             'New Contact Form Submission',
-            `A new contact form has been submitted:\n\nUser Information:\nName: ${name}\nEmail: ${email}\nService: ${service}\nBudget: ${budget}\nMessage: ${message}`
+            `A new contact form has been submitted:\n\nUser Information:\nName: ${name}\nEmail: ${email}\nService: ${service}\nContact No: ${phone}\nMessage: ${message}`
         );
 
         if (!emailSent) {

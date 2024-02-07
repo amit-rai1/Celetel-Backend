@@ -4,7 +4,8 @@ const contactUsSchema = new mongoose.Schema({
     name: String,
     email: String,
     service: String,
-    budget: String,
+    // budget: String,
+    phone:Number,
     message: String
 }, {
     timestamps: true 
