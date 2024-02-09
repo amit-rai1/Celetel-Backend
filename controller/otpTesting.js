@@ -42,7 +42,7 @@ export const sendotpTesting = async (req, res) => {
       await sendOtpSms(recipient, one2OneData.shortMessages);
   
       // Respond with a success message
-      res.status(200).json({ success: true, message: 'API request processed successfully' });
+      res.status(200).json({ success: true, message: 'Otp send successfully' });
     } catch (error) {
       res.status(400).json({ success: false, message: error.message });
     }
@@ -77,10 +77,10 @@ export const sendotpTesting = async (req, res) => {
       };
   
       // Make a POST request to the external API
-      console.log('apiPayload:', apiPayload);
+      // console.log('apiPayload:', apiPayload);
       const response = await axios.post(apiUrl, apiPayload);
 
-      console.log('API Response:', response.data);
+      // console.log('API Response:', response.data);
     
       if (response.status !== 200) {
         console.error('Failed to send OTP SMS. API Error:', response.status, response.statusText);
