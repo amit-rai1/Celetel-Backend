@@ -49,7 +49,7 @@ export const rateLimitMiddleware = async (req, res, next) => {
   
       // Check if the number of hits within the last 5 minutes exceeds the limit
       if (otpData.rateLimit && otpData.rateLimit.hits >= 2) {
-        return res.status(429).json({ success: false, message: 'Limit exceeded. Please test again after 5 minutes' });
+        return res.status(200).json({ success: false, message: 'Limit exceeded. Please test again after 5 minutes' });
       }
   
       // Update hit count and timestamp
