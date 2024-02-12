@@ -4,8 +4,8 @@ const socialController = {
     googleAuth: passport.authenticate('google', { scope: ['profile', 'email'] }),
 
     googleCallback: passport.authenticate('google', {
-        successRedirect: 'http://localhost:3000',
-        failureRedirect: 'http://localhost:3000/login',
+        successRedirect: 'https://www.celetel.com',
+        failureRedirect: 'https://www.celetel.com/login',
     }),
 
     loginSuccess(req, res) {
@@ -23,7 +23,7 @@ const socialController = {
     logout(req, res) {
         try {
             req.logout();
-            res.redirect('http://localhost:8600');
+            res.redirect('https://celetel-testing.onrender.com');
         } catch (error) {
             res.status(500).json({ message: 'Logout Error' });
         }
