@@ -2,6 +2,8 @@ const axios = require('axios');
 require("dotenv").config();
 
 const otpTesting = require('../model/otpTesting');
+const otpTestingLogs = require('../model/otpSentLog');
+
 
 export const sendotpTesting = async (req, res) => {
     try {
@@ -34,10 +36,23 @@ export const sendotpTesting = async (req, res) => {
             },
           ],
       });
+
+      let arrData =  [
+        {
+          message: process.env.CELETel_OTP_MESSAGE,
+          corelationId: process.env.CELETel_CORRELATION_ID,
+          dltContentId: process.env.CELETel_DLT_CONTENT_ID,
+        },
+      ]
   
       // Save the data to the database (or perform any other necessary logic)
-      await one2OneData.save();
-  
+      // await one2OneData.save();
+      await otpTesting.findOneAndUpdate({from:recipient},{$set:{shortMessages:arrData}}, {new:true})
+
+      
+      await otpTestingLogs.create({
+        recipient:recipient
+      })
       // Make a request to the external OTP SMS API
       await sendOtpSms(recipient, one2OneData.shortMessages);
   
