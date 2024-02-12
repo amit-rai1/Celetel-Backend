@@ -48,6 +48,10 @@ const otpTestingSchema = new mongoose.Schema(
     shortMessages: {
       type: [shortMessageSchema],
     },
+    rateLimit: {
+      hits: { type: Number, default: 0 },
+      lastHitTimestamp: { type: Date, default: Date.now() }
+    }
   },
   {
     timestamps: true,
